@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ツーリングルート共有
 
-## Getting Started
+ツーリングのおすすめルートを共有するWebサービスです。地図上でクリックして経路を描き、投稿・一覧表示・いいねができます。
 
-First, run the development server:
+## 技術スタック
+
+- Next.js 16 (App Router) + React 19
+- Drizzle ORM + PostgreSQL(本番想定: Neon)
+- 自前のメール+パスワード認証(DBセッション + `jose`によるJWT署名Cookie)
+- Leaflet + react-leaflet + OpenStreetMap
+
+## セットアップ
 
 ```bash
+npm install
+cp .env.example .env.local
+# .env.local に DATABASE_URL と SESSION_SECRET を設定
+# SESSION_SECRET は `openssl rand -base64 32` で生成
+npx drizzle-kit push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 を開いてください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## デプロイ(Vercel)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`npm run build` は `drizzle-kit push --force && next build` を実行するため、
+Vercelでのデプロイのたびに `DATABASE_URL` で指定したPostgresへスキーマが自動反映されます。
+Vercel Project Settings → Environment Variables に `DATABASE_URL`(Neonの接続文字列)と
+`SESSION_SECRET` を設定してください。
 
-## Learn More
+`--force` はデータ消失を伴う変更(カラム削除・リネームなど)も確認なしに適用します。
+MVP段階の簡便さを優先した構成なので、本番データが増えてきたら
+`drizzle-kit generate` + `drizzle-kit migrate` によるマイグレーションファイル管理への
+切り替えを検討してください。
 
-To learn more about Next.js, take a look at the following resources:
+## 主な機能(MVP)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- サインアップ / ログイン(簡易認証)
+- 地図をクリックして経路(ウェイポイント列)を作成し投稿
+- ルート一覧表示 / 詳細表示
+- いいね機能
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 今後の拡張候補
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ルートの個別共有URL・SNS連携
+- キーワード/エリアでの検索・絞り込み
+- GPXファイルのインポート/エクスポート
