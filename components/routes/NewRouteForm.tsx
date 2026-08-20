@@ -20,6 +20,7 @@ const RouteDrawMap = dynamic(
 
 export function NewRouteForm() {
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
+  const [routeGeometry, setRouteGeometry] = useState<Waypoint[] | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [area, setArea] = useState("");
@@ -29,14 +30,24 @@ export function NewRouteForm() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      const result = await createRoute({ title, description, area, waypoints });
+      const result = await createRoute({
+        title,
+        description,
+        area,
+        waypoints,
+        routeGeometry: routeGeometry ?? undefined,
+      });
       setState(result);
     });
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <RouteDrawMap waypoints={waypoints} onChange={setWaypoints} />
+      <RouteDrawMap
+        waypoints={waypoints}
+        onChange={setWaypoints}
+        onRouteGeometryChange={setRouteGeometry}
+      />
       {state?.errors?.waypoints && (
         <p className="text-sm text-red-600">{state.errors.waypoints[0]}</p>
       )}

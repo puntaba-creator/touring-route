@@ -21,7 +21,7 @@ export async function createRoute(
     return { errors: validated.error.flatten().fieldErrors };
   }
 
-  const { title, description, area, waypoints } = validated.data;
+  const { title, description, area, waypoints, routeGeometry } = validated.data;
 
   const [route] = await db
     .insert(routes)
@@ -31,6 +31,7 @@ export async function createRoute(
       description: description || null,
       area: area || null,
       waypoints,
+      routeGeometry: routeGeometry ?? null,
     })
     .returning({ id: routes.id });
 
@@ -68,6 +69,7 @@ export async function getRoute(routeId: string) {
       description: routes.description,
       area: routes.area,
       waypoints: routes.waypoints,
+      routeGeometry: routes.routeGeometry,
       createdAt: routes.createdAt,
       authorId: routes.authorId,
       authorName: users.displayName,

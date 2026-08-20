@@ -4,8 +4,17 @@ import { MapContainer, TileLayer, Marker, Polyline } from "react-leaflet";
 import { numberedIcon } from "@/lib/map/icons";
 import type { Waypoint } from "@/lib/db/schema";
 
-export function RouteMapView({ waypoints }: { waypoints: Waypoint[] }) {
+export function RouteMapView({
+  waypoints,
+  routeGeometry,
+}: {
+  waypoints: Waypoint[];
+  routeGeometry?: Waypoint[] | null;
+}) {
   const positions = waypoints.map((w) => [w.lat, w.lng] as [number, number]);
+  const linePositions = (
+    routeGeometry && routeGeometry.length > 1 ? routeGeometry : waypoints
+  ).map((w) => [w.lat, w.lng] as [number, number]);
   const bounds = positions.length > 0 ? positions : undefined;
 
   return (
@@ -20,7 +29,9 @@ export function RouteMapView({ waypoints }: { waypoints: Waypoint[] }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {positions.length > 1 && <Polyline positions={positions} color="#2563eb" />}
+        {linePositions.length > 1 && (
+          <Polyline positions={linePositions} color="#2563eb" />
+        )}
         {waypoints.map((w, i) => (
           <Marker key={i} position={[w.lat, w.lng]} icon={numberedIcon(i + 1)} />
         ))}

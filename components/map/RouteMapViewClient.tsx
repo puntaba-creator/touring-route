@@ -15,6 +15,12 @@ const RouteMapView = dynamic(
   },
 );
 
-export function RouteMapViewClient({ waypoints }: { waypoints: Waypoint[] }) {
-  return <RouteMapView waypoints={waypoints} />;
+export function RouteMapViewClient({
+  waypoints,
+  routeGeometry,
+}: {
+  waypoints: Waypoint[];
+  routeGeometry?: Waypoint[] | null;
+}) {
+  return <RouteMapView waypoints={waypoints} routeGeometry={routeGeometry} />;
 }

@@ -45,6 +45,7 @@ export const routes = pgTable("routes", {
   description: text("description"),
   area: text("area"),
   waypoints: jsonb("waypoints").$type<Waypoint[]>().notNull(),
+  routeGeometry: jsonb("route_geometry").$type<Waypoint[]>(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

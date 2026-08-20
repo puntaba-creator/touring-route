@@ -29,7 +29,10 @@ export default async function RouteDetailPage({
         <p className="text-sm text-gray-500">投稿者: {route.authorName}</p>
       </div>
 
-      <RouteMapViewClient waypoints={route.waypoints} />
+      <RouteMapViewClient
+        waypoints={route.waypoints}
+        routeGeometry={route.routeGeometry}
+      />
 
       {route.description && (
         <p className="whitespace-pre-wrap text-gray-800">{route.description}</p>

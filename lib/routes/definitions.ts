@@ -13,6 +13,7 @@ export const CreateRouteSchema = z.object({
     .array(WaypointSchema)
     .min(2, "地図をクリックして2点以上の経路を作成してください。")
     .max(500, "経路のポイント数が多すぎます。"),
+  routeGeometry: z.array(WaypointSchema).max(5000).optional(),
 });
 
 export type CreateRouteInput = z.infer<typeof CreateRouteSchema>;
@@ -24,6 +25,7 @@ export type CreateRouteState =
         description?: string[];
         area?: string[];
         waypoints?: string[];
+        routeGeometry?: string[];
       };
       message?: string;
     }
